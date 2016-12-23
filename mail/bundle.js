@@ -42,9 +42,82 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ function(module, exports, __webpack_require__) {
+
+	const Router = __webpack_require__(1);
+	const Inbox = __webpack_require__(2);
+
+	const routes = {
+	  inbox: Inbox,
+	};
+
+	document.addEventListener('DOMContentLoaded', function() {
+
+	  const sideNav = document.getElementsByClassName('sidebar-nav');
+	  sideNav[0].addEventListener('click', function(e) {
+	    const li = e.target;
+	    let newLoc = li.innerText.toLowerCase();
+	    if (['compose', 'inbox', 'sent'].includes(newLoc)) {
+	      window.location.hash = newLoc;
+	    }
+	  }, false);
+
+	  const content = document.getElementsByClassName('content')[0];
+	  const router = new Router(content, routes);
+	  router.start();
+	}, false);
+
+
+/***/ },
+/* 1 */
 /***/ function(module, exports) {
 
-	console.log("It's working");
+	class Router {
+	  constructor(node, routes) {
+	    this.node = node;
+	    this.routes = routes;
+	  }
+
+	  start() {
+	    this.render();
+	    window.addEventListener('hashchange', () => {
+	      this.render();
+	    }, false);
+	  }
+
+	  render() {
+	    this.node.innerHTML = "";
+	    const component = this.activeRoute();
+	    if (component === undefined) {
+	      return;
+	    } else {
+	      this.node.appendChild(component.render());
+	    }
+	  }
+
+	  activeRoute() {
+	    let hash = window.location.hash.slice(1);
+	    return this.routes[hash];
+	  }
+	}
+
+	module.exports = Router;
+
+
+/***/ },
+/* 2 */
+/***/ function(module, exports) {
+
+	const Inbox = {
+	  render() {
+	    const inbox = document.createElement('ul');
+	    inbox.className = 'messages';
+	    inbox.innerHTML = 'A lovely message';
+	    return inbox;
+	  }
+	};
+
+	module.exports = Inbox;
 
 
 /***/ }
