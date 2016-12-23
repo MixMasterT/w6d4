@@ -88,9 +88,7 @@
 	  render() {
 	    this.node.innerHTML = "";
 	    const component = this.activeRoute();
-	    if (component === undefined) {
-	      return;
-	    } else {
+	    if (component) {
 	      this.node.appendChild(component.render());
 	    }
 	  }
@@ -106,18 +104,77 @@
 
 /***/ },
 /* 2 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
+
+	const MessageStore = __webpack_require__(3);
 
 	const Inbox = {
 	  render() {
 	    const inbox = document.createElement('ul');
-	    inbox.className = 'messages';
-	    inbox.innerHTML = 'A lovely message';
+	    const messages = MessageStore.getInboxMessages();
+
+	    messages.forEach((message) => {
+	      const messageNode = this.renderMessage(message);
+	      inbox.appendChild(messageNode);
+	    });
+
 	    return inbox;
+	  },
+	  renderMessage(message) {
+	    console.log(message);
+	    let messageNode = document.createElement('li');
+	    messageNode.className = "message";
+
+	    let from = document.createElement('span');
+	    from.className = "messages from";
+	    from.innerText = message.from;
+
+	    messageNode.append(from);
+
+	    let subject = document.createElement('span');
+	    subject.className = "messages subject";
+	    subject.innerText = message.subject;
+	    messageNode.append(subject);
+
+	    let body = document.createElement('span');
+	    body.className = "messages body";
+	    body.innerText = message.body;
+	    messageNode.append(body);
+	    //console.log(messageNode);
+	    return messageNode;
 	  }
 	};
 
 	module.exports = Inbox;
+
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	let messages = {
+	  sent: [
+	    {to: "Miky@mail.com", subject: "Check this out", body: "It's so cool"},
+	    {to: "Linah@mail.com", subject: "Cutie Baby!!!", body: "We love you and Merry Xmas!"}
+	  ],
+	  inbox: [
+	    {from: "grandma@mail.com", subject: "Fwd: Fwd: Fwd: Check this out", body:
+	"Stay at home mom discovers cure for leg cramps. Doctors hate her"},
+	  {from: "person@mail.com", subject: "Questionnaire", body: "Take this free quiz win $1000 dollars"}
+	]
+	};
+
+	const MessageStore = {
+	  getInboxMessages() {
+	    return messages.inbox;
+	  },
+
+	  getSentMessages() {
+	    return messages.sent;
+	  }
+	};
+
+	module.exports = MessageStore;
 
 
 /***/ }
